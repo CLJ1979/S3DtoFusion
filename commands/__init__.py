@@ -4,8 +4,6 @@ from .commandDialog import S3DToFusionDialog as commandDialog
 commands = [
     commandDialog,
     ExperimentalSettingsDialog
-    # paletteShow,
-    # paletteSend
 ]
 
 

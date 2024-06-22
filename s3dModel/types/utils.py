@@ -1,15 +1,19 @@
+from typing import Optional
 from xml.dom.minidom import Element
 
 from ...utils.Exceptions import ElementNotFoundException
 
 
-def getInt(elem: Element, tag: str) -> int:
+def getInt(elem: Element, tag: str, default: Optional[int] = None) -> int:
     try:
         return int(elem.getElementsByTagName(tag)[0].childNodes[0].data)
     except IndexError:
+        if default is not None:
+            return default
         raise ElementNotFoundException(tag)
     except Exception as e:
         raise e
+
 
 def getFloat(elem: Element, tag: str) -> float:
     try:
@@ -18,6 +22,7 @@ def getFloat(elem: Element, tag: str) -> float:
         raise ElementNotFoundException(tag)
     except Exception as e:
         raise e
+
 
 def getStr(elem: Element, tag: str) -> str:
     try:
@@ -34,6 +39,7 @@ def getStr(elem: Element, tag: str) -> str:
             raise e2
     except Exception as e:
         raise e
+
 
 def getBool(elem: Element, tag: str) -> bool:
     try:

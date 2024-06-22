@@ -6,8 +6,7 @@ from .bezier3d import Bezier3D
 from .utils import getInt
 
 
-class BezierDef():
-
+class BezierDef:
     top: int
     npCouple: int
     edited: int
@@ -42,10 +41,10 @@ class BezierDef():
         self.colorCurvatureRadius = getInt(bezierDef, "ColorCurvatureRadius")
         self.colorCurvatureRadiusDir = getInt(bezierDef, "ColorCurvatureRadiusDir")
         self.colorGuidelines = getInt(bezierDef, "ColorGuidelines")
-        self.fixedRelativeTo = getInt(bezierDef, "FixedRelativeTo")
-        self.bezDiffHorthoValid = getInt(bezierDef, "BezDiffHorthoValide")
+        self.fixedRelativeTo = getInt(bezierDef, "FixedRelativeTo", default=-1)
+        self.bezDiffHorthoValid = getInt(bezierDef, "BezDiffHorthoValide", default=1)
         self.bezier3d.fromXML(bezierDef.getElementsByTagName("Bezier3d")[0])
-    
+
     def fromXMLAndGet(self, bezierDef: Element) -> BezierDef:
         self.fromXML(bezierDef)
         return self

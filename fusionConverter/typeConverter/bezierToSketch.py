@@ -15,51 +15,63 @@ from .utils import BezierPlane
 # creates the needed splines to represent the bezier
 
 
-def bezier2dToSketch(sketch: adsk.fusion.Sketch, bezier: Bezier3D, bezierPlane: BezierPlane, settings: ConverterSettings):
+def bezier2dToCtrlPoints(bezier: Bezier3D, bezierPlane: BezierPlane, settings: ConverterSettings) -> List[List[List[float]]]:
+    result = []
 
     for i in range(bezier.controlPoints.numberOfPoints-1):
         startPoint = bezier.controlPoints.points[i]
         endPoint = bezier.controlPoints.points[i+1]
         t1 = bezier.tangents1.points[i+1]
         t2 = bezier.tangents2.points[i]
-        points: List[Point3D] = []
 
         if bezierPlane == BezierPlane.XY:
             if settings.zUp:
-                points.append(Point3D.create(startPoint.x, startPoint.y, 0))
-                points.append(Point3D.create(t2.x, t2.y, 0))
-                points.append(Point3D.create(t1.x, t1.y, 0))
-                points.append(Point3D.create(endPoint.x, endPoint.y, 0))
+                p1x, p1y = startPoint.x, startPoint.y
+                p2x, p2y = t2.x, t2.y
+                p3x, p3y = t1.x, t1.y
+                p4x, p4y = endPoint.x, endPoint.y
             else:
-                points.append(Point3D.create(startPoint.x, startPoint.y, 0))
-                points.append(Point3D.create(t2.x, t2.y, 0))
-                points.append(Point3D.create(t1.x, t1.y, 0))
-                points.append(Point3D.create(endPoint.x, endPoint.y, 0))
+                p1x, p1y = startPoint.x, startPoint.y
+                p2x, p2y = t2.x, t2.y
+                p3x, p3y = t1.x, t1.y
+                p4x, p4y = endPoint.x, endPoint.y
+            pos = startPoint.z
 
         elif bezierPlane == BezierPlane.XZ:
             if settings.zUp:
-                points.append(Point3D.create(startPoint.x, -startPoint.z, 0))
-                points.append(Point3D.create(t2.x, -t2.z, 0))
-                points.append(Point3D.create(t1.x, -t1.z, 0))
-                points.append(Point3D.create(endPoint.x, -endPoint.z, 0))
+                p1x, p1y = startPoint.x, -startPoint.z
+                p2x, p2y = t2.x, -t2.z
+                p3x, p3y = t1.x, -t1.z
+                p4x, p4y = endPoint.x, -endPoint.z
             else:
-                points.append(Point3D.create(startPoint.x, startPoint.z, 0))
-                points.append(Point3D.create(t2.x, t2.z, 0))
-                points.append(Point3D.create(t1.x, t1.z, 0))
-                points.append(Point3D.create(endPoint.x, endPoint.z, 0))
+                p1x, p1y = startPoint.x, startPoint.z
+                p2x, p2y = t2.x, t2.z
+                p3x, p3y = t1.x, t1.z
+                p4x, p4y = endPoint.x, endPoint.z
+            pos = startPoint.y
 
         else:
             if settings.zUp:
-                points.append(Point3D.create(-startPoint.z, -startPoint.y, 0))
-                points.append(Point3D.create(-t2.z, -t2.y, 0))
-                points.append(Point3D.create(-t1.z, -t1.y, 0))
-                points.append(Point3D.create(-endPoint.z, -endPoint.y, 0))
+                p1x, p1y = -startPoint.z, -startPoint.y
+                p2x, p2y = -t2.z, -t2.y
+                p3x, p3y = -t1.z, -t1.y
+                p4x, p4y = -endPoint.z, -endPoint.y
             else:
-                points.append(Point3D.create(-startPoint.y, startPoint.z, 0))
-                points.append(Point3D.create(-t2.y, t2.z, 0))
-                points.append(Point3D.create(-t1.y, t1.z, 0))
-                points.append(Point3D.create(-endPoint.y, endPoint.z, 0))
+                p1x, p1y = -startPoint.y, startPoint.z
+                p2x, p2y = -t2.y, t2.z
+                p3x, p3y = -t1.y, t1.z
+                p4x, p4y = -endPoint.y, endPoint.z
+            pos = startPoint.x
 
+        result.append([[p1x, p1y], [p2x, p2y], [p3x, p3y], [p4x, p4y]])
+    return result, pos
+
+
+def bezier2dToSketch(sketch: adsk.fusion.Sketch, bezier: Bezier3D, bezierPlane: BezierPlane, settings: ConverterSettings):
+    ctrl_points, _ = bezier2dToCtrlPoints(bezier, bezierPlane, settings)
+
+    for cp in ctrl_points:
+        points: List[Point3D] = [Point3D.create(p[0], p[1], 0) for p in cp]
         sketch.sketchCurves.sketchControlPointSplines.add(points, adsk.fusion.SplineDegrees.SplineDegreeThree)  # type: ignore
 
     adsk.doEvents()

@@ -1,7 +1,7 @@
 from typing import List
 import math
 
-from cadcore.bezier_curve import BezierCurve
+from .bezier_curve import BezierCurve
 
 class BezierSlice():
     def __init__(self, bezier_curves: List[BezierCurve], position: float):
@@ -232,10 +232,10 @@ class BezierSlice():
         new_width_scale = abs(new_width / old_width)
 
         if (old_thickness * new_thickness_scale) <= 0.1:
-            return
+            return self
 
         if (old_width * new_width_scale) <= 0.1:
-            return
+            return self
 
         scale_y = new_thickness_scale
         scale_x = new_width_scale

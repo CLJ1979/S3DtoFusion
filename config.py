@@ -11,7 +11,8 @@ from .fusionConverter.converterSettings import ConverterSettings
 class SplineImplementationTechnique(Enum):
     TEXTCOMMANDS = "TextCommands"
     SURFACE_SPLIT = "Surface Split"
-    PROJECT_TO_SURFACE = "Project to Surface (DEFAULT)"
+    PROJECT_TO_SURFACE = "Project to Surface"
+    INTERPOLATE = "Use BoardCAD ported Bezier interpolation (DEFAULT)"
 
 # Flag that indicates to run in Debug mode or not. When running in Debug mode
 # more information is written to the Text Command window. Generally, it's useful
@@ -21,7 +22,7 @@ DEBUG = False
 debug_skip2d = False
 
 experimental_3d_body_generation = False
-experimental_3d_spline_implementation: SplineImplementationTechnique = SplineImplementationTechnique.PROJECT_TO_SURFACE
+experimental_3d_spline_implementation: SplineImplementationTechnique = SplineImplementationTechnique.INTERPOLATE
 
 # Gets the name of the add-in from the name of the folder the py file is in.
 # This is used when defining unique internal names for various UI elements
